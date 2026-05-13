@@ -4,6 +4,7 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PorfileController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/register', fn() => view('pages.auth.register'))->name('register');
@@ -21,6 +22,11 @@ Route::middleware(['auth', 'auth.session'])->group(function () {
     Route::get('/view-update/{id}', [OrderController::class, 'update']);
     Route::put('/save-order/{id}', [OrderController::class, 'save']);
     Route::delete('/view-delete/{id}', [OrderController::class, 'delete']);
+
+    Route::get('/porfile', [PorfileController::class, 'index'])->name('porfile');
+
+    Route::put('/change-password', [PorfileController::class, 'changePassword']);
+
 
     Route::middleware('role:admin')->group(function () {
         Route::get('/view-admin', [AdminController::class, 'index'])->name('dasboard');

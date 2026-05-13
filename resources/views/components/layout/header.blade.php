@@ -7,7 +7,7 @@
     <a href="/view-admin">admin</a>
     @endif
     <div>
-        <p>{{ $name }}</p>
+        <a href="/porfile">{{ $name }}</a>
 
         <form action="/logout" method="post">
             @csrf

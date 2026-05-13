@@ -36,7 +36,7 @@ class UserService
         $user =  $this->userRepository->getByEmail($data['email']);
         if (!$user) throw new Exception('error al iniciar sesión.');
 
-        if (!Hash::check($data['password'], $user->password)) new Exception('Las contraseñas no coinciden');
+        if (!Hash::check($data['password'], $user->password)) throw new Exception('Las contraseñas no coinciden');
 
         return $user;
     }
@@ -91,6 +91,27 @@ class UserService
 
         $user = $this->userRepository->delete($id);
         if (!$user) throw new Exception('Error al eliminar el usuario');
+        return $user;
+    }
+
+    public function changePassword($data)
+    {
+        $id = Auth::id();
+        $result = $this->userRepository->getUserById($id);
+        
+        if (!$result) throw new Exception('Error al obtener usuario');
+        
+        
+        if (!Hash::check($data['current_password'], $result->password)) throw new Exception('Las contraseñas no coinciden');
+        
+        $payload = [
+            'password' => Hash::make($data['password']),
+        ];
+
+        $user = $this->userRepository->update($id, $payload);
+
+        if (!$user) throw new Exception('Error al actualizar contraseña');
+
         return $user;
     }
 }
