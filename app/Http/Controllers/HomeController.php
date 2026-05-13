@@ -29,8 +29,10 @@ class HomeController extends Controller
                 'user' => $user,
                 'orders' => $orders,
             ]);
-        } catch (\Throwable $th) {
-            throw $th;
+        } catch (\Exception $th) {
+           return back()->withErrors([
+            'error' => 'Ocurrió un error al procesar tu solicitud.'
+        ])->withInput();
         }
     }
 
@@ -51,8 +53,10 @@ class HomeController extends Controller
                 'orders' => $orders,
                 'search' => $search,
             ]);
-        } catch (\Throwable $th) {
-            throw $th;
+        } catch (\Exception $th) {
+             return back()->withErrors([
+            'error' => 'Ocurrió un error al procesar tu solicitud.'
+        ])->withInput();
         }
     }
 }

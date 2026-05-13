@@ -4,80 +4,46 @@ namespace App\Http\Controllers;
 
 use App\Http\Services\UserService;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
     private UserService $userService;
-
     public function __construct()
     {
         $this->userService = new UserService();
     }
 
-    public function login(Request $request)
+    public function index()
     {
         try {
-            $validated = $request->validate([
-                'email' => 'required|email',
-                'password' => 'required|min:8',
+            $user = $this->userService->userHeader();
+            $users = $this->userService->allUsers();
+            return view('pages.admin.dasboard', [
+                'userAuth' => $user,
+                'users' => $users,
             ]);
-
-            $this->userService->loginUser($validated);
-
-            $payload = [
-                'email' => $validated['email'],
-                'password' => $validated['password'],
-            ];
-
-            if (Auth::attempt($payload)) {
-                $request->session()->regenerate();
-                return redirect()->intended('/');
-            }
-            return back()->withErrors(['email' => 'Error al iniciar sesión usuario.']);
-        } catch (\Throwable $th) {
-            throw $th;
-        }
-    }
-    public function register(Request $request)
-    {
-        try {
-            $validated  = $request->validate([
-                'name' => 'required|max:50',
-                'email' => 'required|email|unique:users',
-                'password' => 'required|confirmed|min:8',
-            ]);
-
-            $this->userService->registerUser($validated);
-
-            $payload = [
-                'email' => $validated['email'],
-                'password' => $validated['password'],
-            ];
-
-            if (Auth::attempt($payload)) {
-                $request->session()->regenerate();
-                return redirect()->intended('/');
-            }
-            return back()->withErrors(['email' => 'Error al registrar usuario.']);
-        } catch (\Throwable $th) {
-            throw $th;
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al obtener acceso al admin: ')->withInput();
         }
     }
 
-    public function logout(Request $request)
+    public function update($id)
     {
         try {
-            Auth::logout();
+            $this->userService->updateUser($id);
+            return redirect()->route('dasboard')->with('success', 'Usuario actualizado exitosamente.');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al actualizar un usuario')->withInput();
+        }
+    }
 
-            $request->session()->invalidate();
-
-            $request->session()->regenerateToken();
-
-            return redirect('/login');
-        } catch (\Throwable $th) {
-            throw $th;
+    public function delete($id)
+    {
+        try {
+            $this->userService->deleteUser($id);
+            return redirect()->route('dasboard')->with('success', 'Usuario eliminado exitosamente');
+        } catch (\Exception $e) {
+            return redirect()->back()->with('error', 'Error al aliminar usuario')->withInput();
         }
     }
 }

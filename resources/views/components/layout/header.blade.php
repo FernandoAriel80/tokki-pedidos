@@ -3,6 +3,9 @@
 
     <a href="/">Inicio</a>
 
+    @if(auth()->user()?->isAdmin())
+    <a href="/view-admin">admin</a>
+    @endif
     <div>
         <p>{{ $name }}</p>
 

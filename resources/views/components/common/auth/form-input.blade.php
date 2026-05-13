@@ -1,4 +1,3 @@
-
 @props([
 'name',
 'value',
@@ -8,14 +7,13 @@
 ])
 <div class="input-form">
     <label for="{{ $name }}">{{ $label }}</label>
-    <input type="{{ $type }}" name="{{ $name }}" value="{{ old($name) }}" placeholder="{{ $placeholder }}">
+    <input type="{{ $type }}" name="{{ $name }}" value="{{ $value != "" ? $value : old($name)  }}" placeholder="{{ $placeholder }}">
     @error($name)
     <span>{{ $message }}</span>
     @enderror
 
 </div>
 <style>
-    
     :root {
         --border-color-input: #f88080;
     }

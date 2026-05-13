@@ -21,7 +21,7 @@
         <x-common.home.orders-list :orders="$orders" />
         @else
         <div class="no-results">
-            <p>No se encontraron resultados para "{{ request('search') }}"</p>
+            <p>No se encontraron resultados.</p>
         </div>
         @endif
         @else

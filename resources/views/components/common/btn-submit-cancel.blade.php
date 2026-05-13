@@ -1,8 +1,9 @@
 @props([
 'text',
+'url',
 ])
 
-<a href="/" class="btn-submit-cancel">
+<a href="{{ $url }}" class="btn-submit-cancel">
     <button type="button">
         {{ $text }}
     </button>

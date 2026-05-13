@@ -15,13 +15,28 @@ class UserRepository
         return $result;
     }
 
-    public function getUserById(int $id)
+    public function getUserById($id)
     {
         return  User::find($id);
     }
 
     public function getByEmail(string $email)
     {
-        return User::where('email',$email)->first();
+        return User::where('email', $email)->first();
+    }
+
+    public function all($limit)
+    {
+        return User::orderByDesc('created_at')->paginate($limit);
+    }
+
+    public function update($id, $data)
+    {
+        return User::where('id', $id)->update($data);
+    }
+
+    public function delete($id)
+    {
+        return User::where('id', $id)->delete();
     }
 }

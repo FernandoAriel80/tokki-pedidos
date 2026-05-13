@@ -40,6 +40,21 @@ class User extends Authenticatable
     {
         return $this->hasMany(Order::class);
     }
+
+    public function isAdmin()
+    {
+        return $this->role->name === 'admin'; // o $this->role_id === 1
+    }
+
+    public function isUser()
+    {
+        return $this->role->name === 'user';
+    }
+
+    public function hasRole($roleName)
+    {
+        return $this->role->name === $roleName;
+    }
     protected function casts(): array
     {
         return [

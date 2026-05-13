@@ -1,24 +1,35 @@
 <div class="form-containt">
     <div class="form-register">
-        <h1>Inicia sesión</h1>
-        <form method="POST" action="/login">
+        <h1>Register</h1>
+        <form method="POST" action="/register">
             @csrf
-            <x-common.admin.form-input
+            <x-common.auth.form-input
+                name="name"
+                type="text"
+                label="Nombre:"
+                value=""
+                placeholder="Ingrese nombre completo" />
+            <x-common.auth.form-input
                 name="email"
                 type="email"
                 label="Correo:"
                 value=""
                 placeholder="Ingrese un correo valido" />
-            <x-common.admin.form-input
+            <x-common.auth.form-input
                 name="password"
                 type="password"
                 label="Contraseña:"
                 value=""
                 placeholder="Ingrese contraseña de 8 digitos" />
-
-            <x-common.admin.btn-submit text="Inicia sesión" color="red" hover_color="green" />
+            <x-common.auth.form-input
+                name="password_confirmation"
+                type="password"
+                label="Contraseña de verificación"
+                value=""
+                placeholder="Vuelva a ingresar la contraseña" />
+            <x-common.auth.btn-submit text="Registrarse" color="red" hover_color="green" />
         </form>
-        <a href="/register">register</a>
+        <a href="/login">login</a>
     </div>
 
 </div>

@@ -1,43 +1,77 @@
 <x-layout.layout :name="$user['name']">
+    @if(session('success'))
+    <div class="success-message">
+        {{ session('success') }}
+    </div>
+    @endif
+
+    @if(session('error'))
+    <div class="error-message">
+        {{ session('error') }}
+    </div>
+    @endif
+
     <div class="form-containt">
         <div class="form-order">
-            <form action="/create-order" method="POST" onsubmit="disableButton(this)">
+            <form action="/save-order/{{ $order->id }}" method="POST" onsubmit="disableButton(this)">
                 @csrf
+                @method('PUT')
                 <x-common.auth.form-input
                     name="title"
-                    value=""
+                    :value="$order->product_title"
                     label="Producto:"
                     type="text"
                     placeholder="Poner el nombre del producto" />
 
                 <x-common.auth.form-input
                     name="customer"
-                    value=""
+                    :value="$order->customer_name"
                     label="Cliente:"
                     type="text"
                     placeholder="Poner el nombre del cliente" />
                 <x-common.auth.form-input
                     name="price"
-                    value=""
+                    :value="$order->price"
                     label="Precio:"
                     type="number"
                     placeholder="Poner el precio del producto" />
 
                 <div class="input-area">
                     <label for="description">Descripción:</label>
-                    <textarea name="description" rows="5" cols="50" placeholder="Escribe una descripción detallada...">{{ old('description') }}</textarea>
+                    <textarea name="description" rows="5" cols="50" placeholder="Escribe una descripción detallada...">{{ $order->description }}</textarea>
                     @error('description')
                     <span style="color: #f81a1a;">{{ $message }}</span>
                     @enderror
                 </div>
                 <x-common.auth.form-input
                     name="delivery_date"
-                    value=""
+                    :value="$order->delivery_date instanceof \Carbon\Carbon ? $order->delivery_date->format('Y-m-d') : $order->delivery_date"
                     label="Fecha de entrega:"
                     type="date"
                     placeholder="Poner la fecha de entrega" />
+                <div class="input-check-input">
+                    <label for="is_finished">
+                        ¿Está entregado?
+                    </label>
+                    <input
+                        class="is_finished"
+                        type="checkbox"
+                        name="is_finished"
+                        id="is_finished"
+                        value="1"
+                        {{ $order->is_finished ? 'checked' : '' }}>
+                </div>
+                @if ($order->is_finished)
+                <x-common.auth.form-input
+                    name="finished_date"
+                    :value="$order->finished_date instanceof \Carbon\Carbon ? $order->finished_date->format('Y-m-d') : $order->finished_date"
+                    label="Fecha de pedido entregado:"
+                    type="date"
+                    placeholder="Poner la fecha que se entrego" />
+
+                @endif
                 <div class="btn-containt">
-                    <x-common.btn-submit-cancel text="Cancelar" url="/" />
+                    <x-common.btn-submit-cancel text="Cancelar" url="{{ url()->previous() }}" />
                     <x-common.btn-submit-accept text="Aceptar" />
                 </div>
 
@@ -93,13 +127,30 @@
         width: 400px;
     }
 
-    .input-check {
-        width: 100%;
-    }
-
     .input-check-input {
         display: flex;
-        width: 200px;
+        align-items: center;
+        text-align: left;
+        gap: 10px;
+        padding: 10px 20px;
+        margin: 10px 0;
+    }
+
+    .input-check-input label {
+        margin: 0;
+        cursor: pointer;
+        font-weight: normal;
+    }
+
+    .input-check-input .is_finished {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+        margin: 0;
+    }
+
+    .input-check-input .is_finished:hover {
+        transform: scale(1.05);
     }
 
     .input-area,
